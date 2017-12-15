@@ -51,11 +51,45 @@ brewercolors=function(nvar) {
 
 
 
+# Segunda version ---------------------------------------------------------
 
-# "#a6611a","#dfc27d","#ffffbf","#80cdc1","#01857"
+turquesa <- "#5F978E"
+violet <- "#5B4689"
+magenta <- "#A14063"
+magenta2 <-"#9D2D5D"
+naranja <- "#CB8128"
+erc <- "#DBBD5D"
+podemos <- "#83366C"
+rojo_psc <- "#C83C3B"
+AMZ_blue <- "#104577"
+AMZ_maroon <- "#ab2323"
+AMZ_lightblue <- "#7cb5d2"
+AMZ_violet <- "#bc94b7"
+AMZ_green <- "#18a68c"
+AMZ_pistachio <- "#bcd74a"
+AMZ_mustard <- "#fde05e"
+AMZ_lightpink <-"#f8e0c8"
+AMZ_darkblue <-"#0f3e5a"
+AMZ_brickred<- "#ec6645"
+AMZ_orange<-"#f7a519"
+AMZ_purple<- "#b54295"
+AMZ_red<- "#ee1822"
+AMZ_blue2<-"#106ab4"
+AMZ_lightblue2<-"#31a5dd"
+
+AMZcolors=c(magenta, magenta2,AMZ_maroon,rojo_psc, AMZ_red,AMZ_brickred,
+            AMZ_orange, erc,AMZ_mustard, AMZ_pistachio, AMZ_green,
+            turquesa,AMZ_lightblue, AMZ_lightblue2, AMZ_blue2,AMZ_blue, AMZ_darkblue,
+            violet,podemos, AMZ_purple,AMZ_violet ,
+             AMZ_lightpink)
 
 
+# n=seq(1:16)
+# barplot(n, col=rev(colors16))
 
+
+ndata<- 5 # number of datasets to represent
+colors<-sample(AMZcolors, ndata, replace=T) # subsample to get just ndata colors
 
 
 
