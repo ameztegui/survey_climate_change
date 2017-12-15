@@ -14,4 +14,9 @@ New Brunswick. The repository contains the following scripts:
 * 00_Weight_Data.R: reads the former file (SurveyData_Clean.Rdata) and assigns weights based on the different proportions of each 
 stakeholder across provinces. Saves the resulting data frame as SurveyData_Clean_Weighted.Rdata
 
-* 01_Sociodemography.R: calculates some sociodemographic 
+* 01_Sociodemography.R: performs some sociodemographic analyses: assesses the distribution of gender, age, education level, stakeholder, province and forest type across provinces and stakeholders. It also evaluates the differences in NEP and political view across these sociodemographic variables.
+
+* 02_LikertR: analyzes the likert type questions of the survey, using the tools in the `r likert`package. It does not plot any figure, but created the object needed to plot them using the `r Figures.R`script.
+
+
+
