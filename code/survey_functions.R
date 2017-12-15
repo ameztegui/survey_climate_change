@@ -438,7 +438,7 @@ library(tidyverse)
               
               Tuk$groups <- Tuk$groups %>%
                   mutate(rank = dense_rank(-value))
-              print(Tuk$groups)
+              result <- as.data.frame(Tuk$groups)
     }
     
     wtd_describe_simple <- function(dataframe, columns) {
