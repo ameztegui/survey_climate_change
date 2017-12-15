@@ -36,16 +36,16 @@ library(party)
      }
           
           
-## Adaptive Practices (46-61) ######
+## Adaptive Practices (32-47) ######
 
-describe_simple(survey,46:61)
-wtd_describe_simple(survey,46:61)
+describe_simple(survey,32:47)
+wtd_describe_simple(survey,32:47)
 
 relimp_practices <- data.frame (matrix(NA,ncol=8))
 names(relimp_practices)<- c("Province" ,"Stakeholder", "Gender" , "Age" ,
                            "Education" , "Forest_Type", "Politics", "Question")
 
-for (i in 46:61) {
+for (i in 32:47) {
      
      work_survey<- subset(survey,!is.na(survey[,i]))
      set.seed(125)
@@ -66,7 +66,7 @@ for (i in 46:61) {
 }
 
 
-for (i in c(46:61)) { 
+for (i in c(32:47)) { 
      
      work_survey<- subset(survey,!is.na(survey[,i]))  
      
