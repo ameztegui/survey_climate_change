@@ -1,8 +1,13 @@
+
+## Adaptive Practices ##
+
 rm(list=ls())
 
-source("./Rcode/01Import_Clean_Data.R")
-source("./Rcode/01bAssignWeights.R")
-source("./Rcode/survey_functions.R")
+
+source("./code/survey_functions.R")
+load("./data/SurveyData_Clean_Weighted.Rdata")
+
+library(scales)
 
 library(reshape2)
 library(party)
