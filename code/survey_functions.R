@@ -13,6 +13,7 @@ library(Hmisc)
 library(reshape2)
 library(weights)
 library(fifer)
+library(tidyverse)
 
 
          # ANOVA: comparison when dep. variables is continuous -------------------------------
@@ -232,7 +233,8 @@ library(fifer)
               
               
 # Describe statistics -----------------------------------------------------         
-         describe_stats <- function(dataframe, indep, columns, leyenda) {
+ 
+      describe_stats <- function(dataframe, indep, columns, leyenda) {
          
              df <- data.frame(indep=character(),
                           mean=numeric(), 
@@ -328,7 +330,7 @@ library(fifer)
          return(p)
     }
          
-         wtd_describe_stats <- function(dataframe, indep, columns, leyenda) {
+      wtd_describe_stats <- function(dataframe, indep, columns, leyenda) {
          
               # Create an empty dataframe
               df <- data.frame(indep=character(),
@@ -415,7 +417,7 @@ library(fifer)
     }
     
     
-         describe_simple <- function(dataframe, columns) {
+     describe_simple <- function(dataframe, columns) {
          df <- data.frame( mean=numeric(), 
                           sd=numeric(), 
                           N=numeric(),
@@ -424,30 +426,22 @@ library(fifer)
                           Letter=character()) 
               
               # Create the dataset with the summarized data
-              
-              #z <- data.frame(describe(dataframe[,min(columns):max(columns)]))
-              #z$Question <-colnames(dataframe)
-              #print(z)
-              
-    #      for (i in min(columns): max(columns)) {
-    #           dep<-colnames(dataframe)[i]
-    #           print(dep)
-    #      
-    #           # Subset data
-    #           data<-subset(dataframe, !is.na(dataframe[dep]))
-              
+             
               # Transpose the database from 'wide' to "long' format
               practices<-melt(data=dataframe,id.vars=c("Response.ID","Province","Stakeholder","Gender","Age","Education","Forest_Type","Politics","nep"),measure.vars=columns)
               names(practices)[names(practices) == 'variable'] <- 'Practice'         
     
               ## Analyze the data 
-            
               anova.test<-aov(formula(value~Practice), data=practices)
               Tuk<-HSD.test (anova.test, trt='Practice')
+              Tuk$groups$Practice = row.names(Tuk$groups)
+              
+              Tuk$groups <- Tuk$groups %>%
+                  mutate(rank = dense_rank(-value))
               print(Tuk$groups)
     }
     
-         wtd_describe_simple <- function(dataframe, columns) {
+    wtd_describe_simple <- function(dataframe, columns) {
               df <- data.frame( mean=numeric(), 
                                 sd=numeric(), 
                                 N=numeric(),
