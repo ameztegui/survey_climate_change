@@ -18,6 +18,13 @@ stakeholder across provinces. Saves the resulting data frame as `SurveyData_Clea
 
 * `02_LikertR`: analyzes the likert type questions of the survey, using the tools in the `likert`package. It does not plot any figure, but created the object needed to plot them using the `Figures.R`script.
 
+* `03_Random_forests.R`: 
+
+* `survey_functions.R`contains all the functions to perform the analyses. It does not modify any file *per se*, but needs to be loaded in all sessions to perform the analyses.
+
+* `zz_AMZ_colors.R`: contains a series of color palettes to create the figures
+
+
 
 
 
