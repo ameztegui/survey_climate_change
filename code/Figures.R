@@ -6,13 +6,13 @@ source("./code/02_Likert.R")
 
 
 
-# Figure 1: Overall Responses ---------------------------------------------
+# Figure 2: Overall Responses ---------------------------------------------
     
     # Change names of the likert scale so they can be displayed in two rows (only for lower pannel)
       colnames(likert_current$results) <- c("Item", "Strongly\n disagree", "Disagree","Slightly\n disagree",
                                "Neutral", "Slightly\n agree", "Agree", "Strongly\n agree")
 
-    Fig1a <- plot(likert_gen_imp, ordered=F,  wrap= 45,text.size=5) +
+    Fig2a <- plot(likert_gen_imp, ordered=F,  wrap= 45,text.size=5) +
         ggtitle("Section 1: General beliefs about climate change") + 
         theme(axis.text.y = element_text(hjust=0, size=16),
         axis.text.x = element_blank(),
@@ -21,7 +21,7 @@ source("./code/02_Likert.R")
         guides(fill=FALSE) 
 
 
-    Fig1b <- plot(likert_for_imp, ordered=F,  wrap=45, text.size=5) +
+    Fig2b <- plot(likert_for_imp, ordered=F,  wrap=45, text.size=5) +
         ggtitle("Section 2: Impacts of climate change on forest ecosystems") +
         theme(axis.text.y = element_text(hjust=0, size=16),
         axis.text.x =element_blank(),
@@ -30,7 +30,7 @@ source("./code/02_Likert.R")
         guides(fill=FALSE)
 
 
-    Fig1c <- plot(likert_current, ordered=F,  wrap=45,text.size=5) +
+    Fig2c <- plot(likert_current, ordered=F,  wrap=45,text.size=5) +
         ggtitle("Section 3: Current forest practices and need for adaptation") +
         theme(axis.text.y = element_text(hjust=0, size=16),
         axis.text.x = element_text(size=16),
@@ -39,8 +39,8 @@ source("./code/02_Likert.R")
         legend.text = element_text(size = 15)) +
         guides( fill=guide_legend("",nrow=1))    
 
-    pdf(file="./figs/Final/Figure_01.pdf", width=12.2, height=18)
-        multiplot (Fig1a, Fig1b, Fig1c, cols=1)
+    pdf(file="./figs/Final/Figure_02.pdf", width=12.2, height=18)
+        multiplot (Fig2a, Fig2b, Fig2c, cols=1)
     dev.off()
 
   

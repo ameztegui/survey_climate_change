@@ -6,7 +6,7 @@ library(agricolae)
 library(tidyverse)
 library (fifer) # post-hoc tests for chi-square test
 
-load("./data/SurveyData.Rdata")
+load("./data/raw_SurveyData.Rdata")
 
 # Rename variables --------------------------------------------------------
 
