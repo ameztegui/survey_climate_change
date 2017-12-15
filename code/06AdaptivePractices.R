@@ -8,9 +8,9 @@ source("./code/survey_functions.R")
 load("./data/SurveyData_Clean_Weighted.Rdata")
 
 library(scales)
-
 library(reshape2)
 library(party)
+library(tidyverse)
 
 # Redefine the levels of the explanatory variables
      survey$Politics <- ordered(survey$Politics)
@@ -38,8 +38,39 @@ library(party)
           
 ## Adaptive Practices (32-47) ######
 
-describe_simple(survey,32:47)
-wtd_describe_simple(survey,32:47)
+# Provide the overall max-diff score and assess differences
+    describe_simple(survey,32:47)
+    wtd_describe_simple(survey,32:47)
+
+# Create dataframe with the score per province
+    
+    practice_prov <- survey %>%
+        group_by(Province) %>%
+        do(describe_simple(., 32:47))
+    
+    p <- ggplot(practice_prov, aes(Province, rank,
+                         group = Practice, colour = Practice, label = Practice))
+    p1 <- p + geom_line(size=2)
+    %>%
+        
+
+        dplyr::select(-groups, -value) %>% 
+        spread(key=Province, value=rank )
+    
+    practice_stake <- survey %>%
+        group_by(Stakeholder) %>%
+        do(describe_simple(., 32:47)) %>%
+        dplyr::select(-groups, -value) %>% 
+        spread(key=Stakeholder, value=rank)
+
+# Create bump charts for province and stakeholder -------------------------
+
+
+
+    
+    
+# Random forests for the causes explaining the adaptive practices ---------
+
 
 relimp_practices <- data.frame (matrix(NA,ncol=8))
 names(relimp_practices)<- c("Province" ,"Stakeholder", "Gender" , "Age" ,
