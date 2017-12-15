@@ -3,14 +3,18 @@
 
 rm(list=ls())
 
-
 source("./code/survey_functions.R")
+source("./code/zz_AMZcolors.R")
+
+colors16 <- AMZcolors[c(3,4,6,7,8,9,10,11,12,13,14,15,17,18,19,20)]
+
 load("./data/SurveyData_Clean_Weighted.Rdata")
 
 library(scales)
 library(reshape2)
 library(party)
 library(tidyverse)
+
 
 # Redefine the levels of the explanatory variables
      survey$Politics <- ordered(survey$Politics)
@@ -23,55 +27,87 @@ library(tidyverse)
      levels(survey$Age) <- c("<34", "35-44", "45-54", "55-64")
      levels(survey$Education) <- c("Non U.", "BSc", "MSc", "PhD")
      levels(survey$Forest_Type) <- c("Boreal", "Mixed", "Temp.", NA)
-
-
-# Create function to compute classification accuracy
-
-     class_accur <- function (data) {
-          #data <- as.matrix(data)
-          correct <- sum(diag(data))
-          total <- sum(data)
-          accuracy <- correct/total
-          return(accuracy)
-     }
           
           
 ## Adaptive Practices (32-47) ######
 
 # Provide the overall max-diff score and assess differences
     describe_simple(survey,32:47)
-    wtd_describe_simple(survey,32:47)
+    # wtd_describe_simple(survey,32:47)
 
 # Create dataframe with the score per province
-    
+    survey<- as_tibble(survey)
     practice_prov <- survey %>%
+        gather(32:47,key="Practice", value = "score") %>%
+        dplyr::group_by(Practice, Province) %>%
+            summarise(score = mean(score, na.rm=T)) 
+    
+    %>%
+        ungroup() 
+    %>%
         group_by(Province) %>%
+            mutate(rank = dense_rank(-score))
+        
+        
         do(describe_simple(., 32:47))
     
-    p <- ggplot(practice_prov, aes(Province, rank,
-                         group = Practice, colour = Practice, label = Practice))
-    p1 <- p + geom_line(size=2)
-    %>%
-        
 
-        dplyr::select(-groups, -value) %>% 
-        spread(key=Province, value=rank )
-    
     practice_stake <- survey %>%
         group_by(Stakeholder) %>%
         do(describe_simple(., 32:47)) %>%
-        dplyr::select(-groups, -value) %>% 
-        spread(key=Stakeholder, value=rank)
-
+        # arrange( rank[Stakeholder=="Stu"])
+    
 # Create bump charts for province and stakeholder -------------------------
 
+    # Per province
+    ggplot(practice_prov, aes(Province, rank,
+                              group = Practice, 
+                              colour = fct_reorder2(Practice, Province, -rank), 
+                              label = Practice)) + 
+        geom_line(size=1.5) + 
+        geom_text(data = subset(practice_prov,Province == "NB"), 
+                  size=3, aes(x = Province, hjust = -0.1)) + 
+        theme_bw() + 
+        theme(legend.position = "none", 
+              panel.border = element_blank(),
+              axis.ticks = element_blank()) +
+        scale_colour_manual(values=colors16) +
+        scale_x_discrete(breaks = c(levels(practice_prov$Province), "")) + 
+        scale_y_continuous(breaks = NULL,trans = "reverse") +
+        xlab(NULL) + ylab(NULL) +
+        theme(axis.text=element_text(size=12))
+        
 
-
-    
+    # Per stakeholder
+    ggplot(practice_stake, aes(Stakeholder, rank,
+                              group = Practice, 
+                              colour = fct_reorder2(Practice, Stakeholder, -rank), 
+                              label = Practice)) + 
+        geom_line(size=1.5) + 
+        geom_text(data = subset(practice_stake,Stakeholder == "Stu"), 
+                  size=3, aes(x = Stakeholder, hjust = -0.1)) + 
+        theme_bw() + 
+        theme(legend.position = "none", 
+              panel.border = element_blank(),
+              axis.ticks = element_blank()) +
+        scale_colour_manual(values=colors16) +
+        scale_x_discrete(breaks = c(levels(practice_stake$Stakeholder), "")) + 
+        scale_y_continuous(breaks = NULL,trans = "reverse") +
+        xlab(NULL) + ylab(NULL) +
+        theme(axis.text=element_text(size=12))
     
 # Random forests for the causes explaining the adaptive practices ---------
 
-
+    # Create function to compute classification accuracy
+    
+    class_accur <- function (data) {
+        #data <- as.matrix(data)
+        correct <- sum(diag(data))
+        total <- sum(data)
+        accuracy <- correct/total
+        return(accuracy)
+    }
+    
 relimp_practices <- data.frame (matrix(NA,ncol=8))
 names(relimp_practices)<- c("Province" ,"Stakeholder", "Gender" , "Age" ,
                            "Education" , "Forest_Type", "Politics", "Question")
