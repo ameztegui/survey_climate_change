@@ -117,7 +117,7 @@ library(tidyverse)
         scale_x_discrete(breaks = c(levels(practice_stake$Stakeholders), "")) + 
         scale_y_continuous(breaks = NULL,trans = "reverse") +
         xlab(NULL) + ylab(NULL) +
-        theme(axis.text=element_text(size=32, face = "bold"),
+        theme(axis.text=element_text(size=32),
               plot.margin = unit(c(0,22,0.5,0), "cm"))
     
     # Code to override clipping
