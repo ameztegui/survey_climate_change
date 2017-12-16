@@ -785,4 +785,42 @@ library(tidyverse)
              return(value)}
          
          
+         mf_labeller_simple <- function( value){
+             value <- as.character(value)
+             
+             #adaptive practices
+             value[value=="Natural_Regeneration" ] <- "Allow natural regeneration \nfollowing disturbances"
+             value[value=="Old_growth_forests" ] <- "Maintain large areas of old growth forests"
+             value[value=="Reduce_differences_natural" ] <- "Reduce differences between managed \nand natural forests"
+             value[value=="Species_diversification" ] <- "Promote species diversification \n(at the stand or landscape level)"
+             value[value=="Translocate_Populations" ] <- "Translocation of populations\n within that species' current range"
+             value[value=="Assisted_migration" ] <- "Assisted migration (translocation\n of species outside its range"
+             value[value=="Seed_transfer" ] <- "Modify seed transfer zones/seed provenances"
+             value[value=="Continuous_cover" ] <- "Maintain continuous tree cover"
+             value[value=="Provenance_tests" ] <- "Implement provenance tests\nalong latitudinal gradients"
+             value[value=="Diverse_experiments" ] <- "Implement a diversity of small-scale experiments"
+             value[value=="Shorten_rotation" ] <- "Shorten silvicultural cycles (rotation length or \npartial cutting cycle)"
+             value[value=="Thinning" ] <- "Use thinning to reduce stand density"
+             value[value=="Salvage_logging" ] <- "Increase the amount of salvage logging \nafter disturbances"
+             value[value=="Promote_Retention" ] <- "Increase the retention of structural elements\n (green trees, snags)"
+             value[value=="Timber_supply" ] <- "Include climate change in timber supply analysis"
+             value[value=="Harvest_vulnerable_stands" ] <- "Prioritize harvesting most vulnerable stands"
+             #Barriers to implementation
+             value[value=="Uncertainties" ] <- "There are too many uncertainties on climate change impacts"
+             value[value=="Practitioners_impact_low" ] <- "Most practitioners think that the likely impact of CC\n will be low"
+             value[value=="Lack_scientific_support" ] <- "Lack of scientific support and knowledge transfer\n to forest practitioners"
+             value[value=="Lack_info_local_scale" ] <- "There is lack of information about CC impacts\n at local and regional scales"
+             value[value=="Lack_solutions" ] <- "Lack of apparent tangible adaptive solutions\n (ground level practices)"
+             value[value=="Lack_tools" ] <- "Lack of adequate tools (procedures, techniques) for the \n inclusion of climate change in forest planning"
+             value[value=="Lack_workforce" ] <- "Lack of skilled and specialized workforce \nto use the tools needed for the inclusion of CC \nin forest planning (e.g. models)"
+             value[value=="Costs" ] <- "The cost of implementing adaptive measures weakens \nthe economic situation of enterprises"
+             value[value=="Forest_companies_reluctant" ] <- "Forest companies are reluctant to change\n their current management"
+             value[value=="Lack_funding" ] <- "Lack of funding for the development of adaptation strategies"
+             value[value=="Forest_certification" ] <- "Excessive rigidity of most standards of forest certification"
+             value[value=="Rigid_legislation" ] <- "Excessively rigid legislation and public policies"
+             value[value=="Lack_common_view" ] <- "Lack of a common, coherent view for all the forest sector"
+             value[value=="Lack_of_policies" ] <- "Lack of policies that support innovation/diversification of practices"
+             value[value=="Other_imminent_issues" ] <- "An overwhelming collection of other imminent forestry issues\n compete with CC challenges (e.g. endangered species, competition for landbase, water values, etc.)"
+             
+             return(value)}
 
