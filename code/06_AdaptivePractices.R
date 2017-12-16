@@ -42,7 +42,12 @@ library(tidyverse)
             dplyr::summarise(score = mean(score, na.rm=T)) %>%
         group_by(Province) %>%
             dplyr::mutate(rank = dense_rank(-score))%>%
-        mutate(Practices = mf_labeller(Practice))
+        mutate(Practices = mf_labeller(Practice),
+               Provinces = fct_recode(Province, "British \nColumbia" = "BC",
+                                      "Alberta" = "AB",
+                                      "Ontario" = "ON",
+                                      "Quebec" = "QC",
+                                      "New \nBrunswick" = "NB") )
         
     practice_stake <- survey %>%
         gather(32:47,key="Practice", value = "score") %>%
@@ -52,7 +57,14 @@ library(tidyverse)
         dplyr::mutate(rank = dense_rank(-score)) %>%
         mutate(Stakeholder = factor(Stakeholder,
                                     levels = c("Ind","P.Gov", "F.Gov", "Pri", "Aca", "Stu")),
-               Practices = mf_labeller(Practice))
+               Practices = mf_labeller(Practice),
+               ,
+               Stakeholders = fct_recode(Stakeholder, "Industry" = "Ind",
+                                         "Provintial\nGovernment" = "P.Gov",
+                                         "Federal\nGovernment" = "F.Gov",
+                                         "Private\ncompanies" = "Pri",
+                                         "Academics &\n researchers" = "Aca",
+                                         "Students" = "Stu"))
     
     
 # Create bump charts for province and stakeholder -------------------------
@@ -60,22 +72,24 @@ library(tidyverse)
     # Per province
     
     pdf("./figs/Adaptive_Bump_Province.pdf", width=27, height=16)
-        p <- ggplot(practice_prov, aes(Province, rank,
+        p <- ggplot(practice_prov, aes(Provinces, rank,
                                   group = Practices, 
-                                  colour = fct_reorder2(Practice, Province, -rank), 
+                                  colour = fct_reorder2(Practice, Provinces, -rank), 
                                   label = Practices)) + 
             geom_line(size=3.5) + 
             geom_text(data = subset(practice_prov,Province == "NB"), 
-                      size=10, aes(x = Province, hjust = -0.1), lineheight=0.85) + 
+                      size=10, aes(x = Provinces, hjust = -0.1), lineheight=0.85) + 
+            geom_point(size=8) +
+    
             theme_bw() + 
             theme(legend.position = "none", 
                   panel.border = element_blank(),
                   axis.ticks = element_blank()) +
             scale_colour_manual(values = colors16) +
-            scale_x_discrete(breaks = c(levels(practice_prov$Province), "")) + 
+            scale_x_discrete(breaks = c(levels(practice_prov$Provinces), "")) + 
             scale_y_continuous(breaks = NULL,trans = "reverse") +
             xlab(NULL) + ylab(NULL) +
-            theme(axis.text=element_text(size=32, face = "bold"),
+            theme(axis.text=element_text(size=32),
                   plot.margin = unit(c(0,22,0.5,0), "cm"))
         
         # Code to override clipping
@@ -87,19 +101,20 @@ library(tidyverse)
 
     # Per stakeholder
     pdf("./figs/Adaptive_Bump_Stakeholder.pdf", width=27, height=16)
-    p <- ggplot(practice_stake, aes(Stakeholder, rank,
+    p <- ggplot(practice_stake, aes(Stakeholders, rank,
                                    group = Practices, 
-                                   colour = fct_reorder2(Practice, Stakeholder, -rank), 
+                                   colour = fct_reorder2(Practice, Stakeholders, -rank), 
                                    label = Practices)) + 
         geom_line(size=3.5) + 
         geom_text(data = subset(practice_stake,Stakeholder == "Stu"), 
-                  size=10, aes(x = Stakeholder, hjust = -0.1), lineheight=0.85) + 
+                  size=10, aes(x = Stakeholders, hjust = -0.1), lineheight=0.85) + 
+        geom_point(size=8) +
         theme_bw() + 
         theme(legend.position = "none", 
               panel.border = element_blank(),
               axis.ticks = element_blank()) +
         scale_colour_manual(values = colors16) +
-        scale_x_discrete(breaks = c(levels(practice_stake$Stakeholder), "")) + 
+        scale_x_discrete(breaks = c(levels(practice_stake$Stakeholders), "")) + 
         scale_y_continuous(breaks = NULL,trans = "reverse") +
         xlab(NULL) + ylab(NULL) +
         theme(axis.text=element_text(size=32, face = "bold"),
