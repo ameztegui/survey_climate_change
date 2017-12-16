@@ -36,26 +36,23 @@ library(tidyverse)
     # wtd_describe_simple(survey,32:47)
 
 # Create dataframe with the score per province
-    survey<- as_tibble(survey)
     practice_prov <- survey %>%
         gather(32:47,key="Practice", value = "score") %>%
-        dplyr::group_by(Practice, Province) %>%
-            summarise(score = mean(score, na.rm=T)) 
-    
-    %>%
-        ungroup() 
-    %>%
+        group_by(Practice, Province) %>%
+            dplyr::summarise(score = mean(score, na.rm=T)) %>%
         group_by(Province) %>%
-            mutate(rank = dense_rank(-score))
+            dplyr::mutate(rank = dense_rank(-score))
         
-        
-        do(describe_simple(., 32:47))
-    
-
     practice_stake <- survey %>%
+        gather(32:47,key="Practice", value = "score") %>%
+        group_by(Practice, Stakeholder) %>%
+        dplyr::summarise(score = mean(score, na.rm=T)) %>%
         group_by(Stakeholder) %>%
-        do(describe_simple(., 32:47)) %>%
-        # arrange( rank[Stakeholder=="Stu"])
+        dplyr::mutate(rank = dense_rank(-score))
+    
+    practice_stake$Stakeholder <- factor(practice_stake$Stakeholder,
+                                         levels = c("Ind","P.Gov", "F.Gov", "Pri", "Aca", "Stu"))
+    
     
 # Create bump charts for province and stakeholder -------------------------
 
