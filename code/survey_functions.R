@@ -54,13 +54,15 @@ library(tidyverse)
                    # ANOVA and post-hoc comparison with Bonferroni corrections
                    frm <- paste(dep,indep,sep="~")
                    anova.test <- aov(formula(frm), data=data)
+                   print(summary(anova.test))
                    Tuk <- HSD.test (anova.test, trt=indep)
-                   #print(Tuk$groups)
+                   Tuk$groups$trt <- factor(row.names(Tuk$groups))
+                   print(Tuk$groups)
                    
-                        if(indep=="Province"){
-                        Tuk$groups$trt <- factor (Tuk$groups$trt, levels=c("British Columbia", "Alberta         ", "Ontario         ",
-                                                                             "Quebec          ", "New Brunswick   "))}
-                        
+                         if(indep=="Province"){
+                         Tuk$groups$trt <- factor(Tuk$groups$trt, levels=c("British Columbia", "Alberta", "Ontario",
+                                                                              "Quebec", "New Brunswick"))}
+                         
                         #if(indep=="Stakeholder"){
                         #Tuk$groups$trt <- factor (Tuk$groups$trt, levels=c("Federal Gov.   ", "Provincial Gov.", "Academia       ",
                          #                                                  "Industry       ","Other private", "Student        "))}
@@ -70,8 +72,7 @@ library(tidyverse)
                    #print(Tuk$groups)
                    #print(levels(Tuk$groups$trt) )        
                    Tuk$groups<-Tuk$groups[order(Tuk$groups$trt,na.last=T),]
-                  # print(Tuk$groups)
-                   
+
                    # Plot results
                    ggplot(data,aes_string(x = indep,y = dep )) + 
                         geom_boxplot(notch=F,outlier.size=0) + 
@@ -81,8 +82,8 @@ library(tidyverse)
                         #theme_bw() +
                         theme (axis.text.x = element_text(angle = 0, hjust = 0.5)) +
                    #print(length(levels(Tuk$groups$trt)))
-                    annotate("text", x=c(1:length(levels(Tuk$groups$trt))), y=-Inf,vjust=-1, label=round(x=Tuk$groups$means, digits=2),size=4) +
-                    annotate("text", x=c(1:length(levels(Tuk$groups$trt))), y=Inf,vjust=1, label=Tuk$groups$M,size=4)
+                    annotate("text", x=c(1:nrow(Tuk$groups)), y=-Inf,vjust=-1, label=round(x=Tuk$groups[[1]], digits=2),size=4) +
+                    annotate("text", x=c(1:nrow(Tuk$groups)), y=Inf,vjust=1, label=Tuk$groups$groups,size=4)
                    
               }
          
