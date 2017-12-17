@@ -120,7 +120,40 @@ survey <- survey %>%
 # ANOVA for adaptive practices --------------------------------------------
 
 survey_comparison(survey,colnames(survey)[32],"Province")
+survey_comparison(survey,colnames(survey)[33],"Province")
+survey_comparison(survey,colnames(survey)[34],"Province")
+survey_comparison(survey,colnames(survey)[35],"Province")
+survey_comparison(survey,colnames(survey)[36],"Province")
+survey_comparison(survey,colnames(survey)[37],"Province")
+survey_comparison(survey,colnames(survey)[38],"Province")
+survey_comparison(survey,colnames(survey)[39],"Province")
+survey_comparison(survey,colnames(survey)[40],"Province")
+survey_comparison(survey,colnames(survey)[41],"Province")
+survey_comparison(survey,colnames(survey)[42],"Province")
+survey_comparison(survey,colnames(survey)[43],"Province")
+survey_comparison(survey,colnames(survey)[44],"Province")
+survey_comparison(survey,colnames(survey)[45],"Province")
+survey_comparison(survey,colnames(survey)[46],"Province")
+survey_comparison(survey,colnames(survey)[47],"Province")
     
+survey_comparison(survey,colnames(survey)[32],"Stakeholder")
+survey_comparison(survey,colnames(survey)[33],"Stakeholder")
+survey_comparison(survey,colnames(survey)[34],"Stakeholder")
+survey_comparison(survey,colnames(survey)[35],"Stakeholder")
+survey_comparison(survey,colnames(survey)[36],"Stakeholder")
+survey_comparison(survey,colnames(survey)[37],"Stakeholder")
+survey_comparison(survey,colnames(survey)[38],"Stakeholder")
+survey_comparison(survey,colnames(survey)[39],"Stakeholder")
+survey_comparison(survey,colnames(survey)[40],"Stakeholder")
+survey_comparison(survey,colnames(survey)[41],"Stakeholder")
+survey_comparison(survey,colnames(survey)[42],"Stakeholder")
+survey_comparison(survey,colnames(survey)[43],"Stakeholder")
+survey_comparison(survey,colnames(survey)[44],"Stakeholder")
+survey_comparison(survey,colnames(survey)[45],"Stakeholder")
+survey_comparison(survey,colnames(survey)[46],"Stakeholder")
+survey_comparison(survey,colnames(survey)[47],"Stakeholder")
+
+
 #     
 # # Random forests for the causes explaining the adaptive practices ---------
 # 
