@@ -10,6 +10,7 @@ library(scales)
 library(reshape2)
 library(party)
 library(tidyverse)
+library(ggridges)
 
 colors16 <- AMZcolors[c(3,4,6,7,8,9,10,11,12,13,14,15,17,18,19,20)]
 
@@ -35,7 +36,7 @@ survey <- survey %>%
             dplyr::summarise(score = mean(score, na.rm=T)) %>%
         group_by(Province) %>%
             dplyr::mutate(rank = dense_rank(-score))%>%
-        mutate(Practices = mf_labeller(Practice),
+        mutate(Practices = mf_labeller_bump(Practice),
                Province = fct_recode(Province, 
                                      "British \n Columbia" = "British Columbia",
                                      "New\nBrunswick" = "New Brunswick"))
@@ -46,7 +47,7 @@ survey <- survey %>%
         dplyr::summarise(score = mean(score, na.rm=T)) %>%
         group_by(Stakeholder) %>%
         dplyr::mutate(rank = dense_rank(-score)) %>%
-        mutate(Practices = mf_labeller(Practice),
+        mutate(Practices = mf_labeller_bump(Practice),
                Stakeholder = fct_recode(Stakeholder, 
                                         "Provincial\nGovernment" = "Provincial Gov.",
                                         "Federal\nGovernment" = "Federal Gov.",
@@ -59,15 +60,15 @@ survey <- survey %>%
 
     # Per province
     
-    pdf("./figs/Adaptive_Bump_Province.pdf", width=27, height=16)
+    pdf("./figs/Adaptive_Bump_Province.pdf", width=32, height=22)
         p <- ggplot(practice_prov, aes(Province, rank,
                                   group = Practices, 
                                   colour = fct_reorder2(Practice, Province, -rank), 
                                   label = Practices)) + 
-            geom_line(size=3.5) + 
+            geom_line(size=4) + 
             geom_text(data = subset(practice_prov,Province == "New\nBrunswick"), 
-                      size=10, aes(x = Province, hjust = -0.1), lineheight=0.85) + 
-            geom_point(size=8) +
+                      size=11, aes(x = Province, hjust = -0.1), lineheight=0.85, color ="black") + 
+            geom_point(size=8.5) +
     
             theme_bw() + 
             theme(legend.position = "none", 
@@ -77,8 +78,8 @@ survey <- survey %>%
             scale_x_discrete(breaks = c(levels(practice_prov$Province), "")) + 
             scale_y_continuous(breaks = NULL,trans = "reverse") +
             xlab(NULL) + ylab(NULL) +
-            theme(axis.text=element_text(size=32),
-                  plot.margin = unit(c(0,22,0.5,0), "cm"))
+            theme(axis.text=element_text(size=34),
+                  plot.margin = unit(c(0.5,22,0.5,0.5), "cm"))
         
         # Code to override clipping
         gt <- ggplot_gtable(ggplot_build(p))
@@ -88,15 +89,15 @@ survey <- survey %>%
         
 
     # Per stakeholder
-    pdf("./figs/Adaptive_Bump_Stakeholder.pdf", width=27, height=16)
+    pdf("./figs/Adaptive_Bump_Stakeholder.pdf", width=32, height=22)
     p <- ggplot(practice_stake, aes(Stakeholder, rank,
                                    group = Practices, 
                                    colour = fct_reorder2(Practice, Stakeholder, -rank), 
                                    label = Practices)) + 
-        geom_line(size=3.5) + 
+        geom_line(size=4) + 
         geom_text(data = subset(practice_stake,Stakeholder == "Students"), 
-                  size=10, aes(x = Stakeholder, hjust = -0.1), lineheight=0.85) + 
-        geom_point(size=8) +
+                  size=11, aes(x = Stakeholder, hjust = -0.05), lineheight=0.85, color ="black") + 
+        geom_point(size=8.5) +
         theme_bw() + 
         theme(legend.position = "none", 
               panel.border = element_blank(),
@@ -105,8 +106,8 @@ survey <- survey %>%
         scale_x_discrete(breaks = c(levels(practice_stake$Stakeholder), "")) + 
         scale_y_continuous(breaks = NULL,trans = "reverse") +
         xlab(NULL) + ylab(NULL) +
-        theme(axis.text=element_text(size=32),
-              plot.margin = unit(c(0,22,0.5,0), "cm"))
+        theme(axis.text=element_text(size=34),
+              plot.margin = unit(c(0.5,22,0.5,0.5), "cm"))
     
     # Code to override clipping
     gt <- ggplot_gtable(ggplot_build(p))
@@ -114,7 +115,12 @@ survey <- survey %>%
     grid.draw(gt)
     dev.off()
     
+# Ridgeline plots ---------------------------------------------------------
     
+    ggplot(practice_prov, aes(x = score, y = Practices, group = Practices)) +
+        geom_density_ridges(scale = 2, size = 0.75, rel_min_height = 0.02) +
+        theme_ridges() +
+        scale_x_continuous(limits=c(1, 90), expand = c(0.01, 0))
     
 
 # ANOVA for adaptive practices --------------------------------------------
@@ -135,7 +141,7 @@ survey_comparison(survey,colnames(survey)[44],"Province")
 survey_comparison(survey,colnames(survey)[45],"Province")
 survey_comparison(survey,colnames(survey)[46],"Province")
 survey_comparison(survey,colnames(survey)[47],"Province")
-    
+
 survey_comparison(survey,colnames(survey)[32],"Stakeholder")
 survey_comparison(survey,colnames(survey)[33],"Stakeholder")
 survey_comparison(survey,colnames(survey)[34],"Stakeholder")
@@ -152,6 +158,11 @@ survey_comparison(survey,colnames(survey)[44],"Stakeholder")
 survey_comparison(survey,colnames(survey)[45],"Stakeholder")
 survey_comparison(survey,colnames(survey)[46],"Stakeholder")
 survey_comparison(survey,colnames(survey)[47],"Stakeholder")
+
+
+
+
+
 
 
 #     
