@@ -116,8 +116,9 @@ survey <- survey %>%
     dev.off()
     
 # Ridgeline plots ---------------------------------------------------------
-    
-    ggplot(practice_prov, aes(x = score, y = Practices, group = Practices)) +
+    practice_prov %>%
+        arrange(score) %>%
+    ggplot( aes(x = score, y = Practices, group = Practices)) +
         geom_density_ridges(scale = 2, size = 0.75, rel_min_height = 0.02) +
         theme_ridges() +
         scale_x_continuous(limits=c(1, 90), expand = c(0.01, 0))
