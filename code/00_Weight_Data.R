@@ -1,23 +1,27 @@
 library(survey)
 load("./data/SurveyData_Clean.Rdata")
 
-survey.clean<-subset(survey, !is.na(survey$Province))
-survey.clean2<-subset(survey.clean, !is.na(survey.clean$Stakeholder))
+survey.complete <- survey %>%
+    filter(Status == "Complete")
 
-svy.AB <- filter(survey.clean2, Province=="Alberta")
-svy.BC <- filter(survey.clean2, Province=="British Columbia")
-svy.ON <- filter(survey.clean2, Province=="Ontario")
-svy.QC <- filter(survey.clean2, Province=="Quebec")
-svy.NB <- filter(survey.clean2, Province=="New Brunswick")
-
-svy.FG <-  filter(survey.clean2, Stakeholder == "Federal Gov.")
-svy.PG <-  filter(survey.clean2, Stakeholder == "Provincial Gov.")
-svy.IN <-  filter(survey.clean2, Stakeholder == "Industry")
-svy.OP <-  filter(survey.clean2, Stakeholder == "Other private")
-svy.AC <-  filter(survey.clean2, Stakeholder == "Academia")
-svy.ST <-  filter(survey.clean2, Stakeholder == "Student")
+survey.clean <- survey.complete %>%
+    filter (!is.na(Stakeholder), !is.na(Province))
 
 
+table(survey.clean$Province, survey.clean$Stakeholder, exclude = NULL)
+
+svy.AB <- filter(survey.clean, Province=="Alberta")
+svy.BC <- filter(survey.clean, Province=="British Columbia")
+svy.ON <- filter(survey.clean, Province=="Ontario")
+svy.QC <- filter(survey.clean, Province=="Quebec")
+svy.NB <- filter(survey.clean, Province=="New Brunswick")
+
+svy.FG <-  filter(survey.clean, Stakeholder == "Federal Gov.")
+svy.PG <-  filter(survey.clean, Stakeholder == "Provincial Gov.")
+svy.IN <-  filter(survey.clean, Stakeholder == "Industry")
+svy.OP <-  filter(survey.clean, Stakeholder == "Other private")
+svy.AC <-  filter(survey.clean, Stakeholder == "Academia")
+svy.ST <-  filter(survey.clean, Stakeholder == "Student")
 
 
 # Create unweighted survey object -----------------------------------------
@@ -39,7 +43,6 @@ svy.ST <-  filter(survey.clean2, Stakeholder == "Student")
      
 
 # Define population distributions of the variables to weight --------------
-
      
      # Provinces
      stake.dist.AB<- data.frame(Stakeholder = c("Federal Gov."  ,  "Provincial Gov." ,"Industry",  "Other private",  
