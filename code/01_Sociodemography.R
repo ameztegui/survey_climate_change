@@ -12,7 +12,7 @@ library(scales)
 # Sociodemographics per province ------------------------------------------
     
     ## Gender
-    chisq (dataframe=survey, dep="Gender", indep="Province","right") +
+    chisq (dataframe=survey, dep="Gender", indep="Province","right", T) +
     annotate("text",x=c(1,2,3,4,5),y=1.05,ymax=1.10,label=c("a","a","a","a","b"),size=4)
     
     ## Age
@@ -25,7 +25,7 @@ library(scales)
     
     ## Stakeholder
     chisq (dataframe=survey, dep="Stakeholder", indep="Province","right") +
-    annotate("text",x=c(1,2,3,4,5),y=1.05,ymax=1.10,label=c("a","ac","b","c","ab"),size=4) 
+    annotate("text",x=c(1,2,3,4,5),y=1.05,ymax=1.10,label=c("a","b","c","d","ab"),size=4) 
     
     ## Forest_Type
     chisq (dataframe=survey, dep="Forest_Type", indep="Province","n") +
@@ -40,15 +40,15 @@ library(scales)
     
     ## Age
     chisq (dataframe=survey, dep="Age", indep="Stakeholder","n") +
-    annotate("text",x=c(1,2,3,4,5,6),y=1.05,ymax=1.10,label=c("a","a","b","b","b","c"),size=4)
+    annotate("text",x=c(1,2,3,4,5,6),y=1.05,ymax=1.10,label=c("a","a","b","b","ab","c"),size=4)
     
     ## Education
     chisq (dataframe=survey, dep="Education", indep="Stakeholder","n") +
-    annotate("text",x=c(1,2,3,4,5,6),y=1.05,ymax=1.10,label=c("b","c","e","cde","a","d"),size=4)
+    annotate("text",x=c(1,2,3,4,5,6),y=1.05,ymax=1.10,label=c("a","b","c","b","d","e"),size=4)
     
     ## Province
-    wtd_chisq (dataframe=survey, dep="Province", indep="Stakeholder","right") 
-    annotate("text",x=c(1,2,3,4,5,6),y=1.05,ymax=1.10,label=c("a","a","a","a","a","b"),size=4) 
+    chisq (dataframe=survey, dep="Province", indep="Stakeholder","right") +
+    annotate("text",x=c(1,2,3,4,5,6),y=1.05,ymax=1.10,label=c("a","b","c","d","d","e"),size=4) 
     
     ## Forest Type
     chisq (dataframe=survey, dep="Forest_Type", indep="Stakeholder","n") +
