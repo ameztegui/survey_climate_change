@@ -6,7 +6,9 @@ library(agricolae)
 library(tidyverse)
 library (fifer) # post-hoc tests for chi-square test
 
-load("./data/raw_SurveyData.Rdata")
+# load("./data/raw_SurveyData.Rdata")
+
+survey <- read.csv("data/data_raw/survey_data4.csv",header = T, sep = ";")
 
 # Rename variables --------------------------------------------------------
 
@@ -94,11 +96,15 @@ load("./data/raw_SurveyData.Rdata")
 # Transform and regroup variables ----------------------------------------------------
 
     ## Provinces (group Maritimes & Alberta + Saskatchewan)
+
     survey <- survey %>%
-        mutate(Province=replace(Province, Province == "Nova Scotia","New Brunswick"),
-               Province=replace(Province, Province == "Newfoundland and Labrador","New Brunswick"),
-               Province=replace(Province, Province == "Saskatchewan","Alberta"),
-               Province=replace(Province, Province == "Yukon",NA))
+        mutate(Province= fct_recode(Province,
+                                    "New Brunswick" = "Nova Scotia",
+                                    "New Brunswick" = "Newfoundland and Labrador",
+                                    "Alberta" = "Saskatchewan",
+                                    "British Columbia" = "Yukon"))
+    
+
     survey$Province<- factor (survey$Province)
     survey$Province <- factor (survey$Province, levels=c("British Columbia", "Alberta", "Ontario",
                                                          "Quebec", "New Brunswick"))
@@ -123,13 +129,18 @@ load("./data/raw_SurveyData.Rdata")
      table(survey$Forest_Type)  
 
      ## Education (group College & High School & Trade School)
-     table(survey$Education2)
-     survey$Education2 <- factor (survey$Education, levels=c("Non Universitary", "Bachelors Degree", "Masters Degree","Doctorate"))
+     table(survey$Education)
+     
      survey <- survey %>%
-         mutate(Education2 = replace(Education2, Education %in% c("Trade or Vocational School",
-                                                                "College/ Cegep" ,
-                                                                "High school"),"Non Universitary"  ))
-         
+         mutate(Education2 = fct_recode(Education,
+                                        "Non Universitary" = "Trade or Vocational School",
+                                        "Non Universitary" = "College/ Cegep",
+                                        "Non Universitary" = "High school"))
+     
+     table(survey$Education2)
+     survey$Education2 <- factor (survey$Education2, 
+                                  levels=c("Non Universitary", "Bachelors Degree", "Masters Degree","Doctorate"))
+
      survey$Education <- factor (survey$Education2)
      table(survey$Education)
      survey$Education <- ordered (survey$Education)
@@ -137,11 +148,12 @@ load("./data/raw_SurveyData.Rdata")
 
      ## Organization
      table (survey$Organization)
+     table(survey$Other..please.specify..Organization)
      survey$Organization[survey$Organization=="Other"] <- "Provincial Government"
      survey$Organization[survey$Other..please.specify..Organization == "Academic Support"] <- "Academia (faculty, research associate, postdoctoral fellow)"
-     survey$Organization[survey$Other..please.specify..Organization == "Acdi Fao; Foresterie Internationale; Avec Un Fort Lien Avec La Foresterie Québécoise Et Canadienne"] <- "Environmental non-governmental organization"
+     survey$Organization[survey$Other..please.specify..Organization == "Acdi Fao, Foresterie Internationale, Avec Un Fort Lien Avec La Foresterie Québécoise Et Canadienne"] <- "Environmental non-governmental organization"
      survey$Organization[survey$Other..please.specify..Organization == "Agence D'aménagement Forestier Foret Privée"] <- "Industry / Industry Association"
-     survey$Organization[survey$Other..please.specify..Organization == "And Academia "] <- "Academia (faculty, research associate, postdoctoral fellow)"
+     survey$Organization[survey$Other..please.specify..Organization == "And Academia"] <- "Academia (faculty, research associate, postdoctoral fellow)"
      survey$Organization[survey$Other..please.specify..Organization == "Centre De Recherche"] <- "Academia (faculty, research associate, postdoctoral fellow)"
      survey$Organization[survey$Other..please.specify..Organization == "Consulting, Soon To Rejoin Academia"] <- "Consulting"
      survey$Organization[survey$Other..please.specify..Organization == "Enseignement Collégial"] <- "Academia (faculty, research associate, postdoctoral fellow)"
@@ -164,7 +176,7 @@ load("./data/raw_SurveyData.Rdata")
      survey$Organization[survey$Other..please.specify..Organization == "Protection Des Forêts"] <- "Provincial Government"
      survey$Organization[survey$Other..please.specify..Organization == "Regroupement De Propriétaires Forestiers"] <- "Industry / Industry Association"
      survey$Organization[survey$Other..please.specify..Organization == "Stagiaire Post-doctoral En Sciences"] <- "Academia (faculty, research associate, postdoctoral fellow)"
-     survey$Organization[survey$Other..please.specify..Organization == "Unemployed"] <- NA
+     survey$Organization[survey$Other..please.specify..Organization == "Unemployed"] <- "Graduate student"
      survey$Organization[survey$Other..please.specify..Organization == "Utilité Électrique"] <- "Provincial Government"
      survey$Organization <- factor(survey$Organization)
      table (survey$Organization)   
@@ -173,7 +185,7 @@ load("./data/raw_SurveyData.Rdata")
      survey$Stakeholder[survey$Organization=="Consulting" ] <- "Other private"
      survey$Stakeholder[survey$Organization=="Environmental non-governmental organization" ] <- "Other private"
      survey$Stakeholder[survey$Organization=="Federal Government" ] <- "Federal Gov."
-     survey$Stakeholder[survey$Organization=="First Nations Organization" ] <- NA
+     survey$Stakeholder[survey$Organization=="First Nations Organization" ] <- "Other private"
      survey$Stakeholder[survey$Organization=="Graduate student"] <- "Student"
      survey$Stakeholder[survey$Organization=="Industry / Industry Association" ] <- "Industry"
      survey$Stakeholder[survey$Organization=="Provincial Government"] <- "Provincial Gov."
