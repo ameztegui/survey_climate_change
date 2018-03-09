@@ -1,8 +1,10 @@
+rm(list=ls())
 
 load("./data/SurveyData_Clean_Weighted.Rdata")
 source("./code/survey_functions.R")
 
 library(likert)
+library(tidyverse)
 
 # Make the values a factor with given levels (instead of numerical values)
     fct_survey <- survey    
@@ -32,7 +34,9 @@ library(likert)
     likert_gen_imp$results [,2:8] <- round(likert_gen_imp$results[,2:8], 1)
     likert_gen_imp$results$Item <- factor(likert_gen_imp$results$Item,
                                           levels= rev(likert_gen_imp$results$Item))
+    
 
+    
     
     forest_impacts <- colnames(fct_survey)[11:17]
     for_imp <- fct_survey[forest_impacts]
