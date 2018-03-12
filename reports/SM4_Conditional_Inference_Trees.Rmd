@@ -1,0 +1,18 @@
+---
+title: | 
+  | Supplementary Material S4 
+  | Conditional Inference Trees
+output: 
+    pdf_document:
+        fig_width: 5.5
+        fig_height: 7.5
+---
+```{r package options, include =F}
+knitr::opts_knit$set(root.dir = '../')
+
+```
+Conditional Inference (CI) classification trees for predicting perceptions of climate change and its impacts on forest ecosystems across the Canadian forest sector. Conditional Inference (CI) classification trees split the dataset into different groups based on certain values of the explanatory variables. At each intermediate mode, dataset is split into two groups based on the values of the explanatory variable indicated in the branches under the node.  Stacked bar plot at each terminal node indicates the proportion of respondents that disagreed (dark gray), agreed (light gray) or were unsure (gray) about the statement. Total sample size depends on the statement, and can be calculated adding the sample size of the terminal nodes (indicated by brackets). Each tree only shows statistically significant variables at p < 0.05. The classification accuracy for each conditional inference tree is also provided. Education level can have 4 levels: *Non Univ*: non universitary studies; *BSc*: bachelor of sciences, *MSc*: Master of Sciences, *PhD*: doctorate. Provinces are *BC*: British Columbia; *AB:* ALberta; *ON*: Ontario; *QC*: Québec; *NB*: New Brunswick. Stakeholders are: *F.Gov*: Federal Govewrnment; *P.Gov*: Provincial Government; *Indus*: Industry; *Priv*.: other private organizations; *Acad*: academia (professors, researchers); *Stud*: graduate students.
+
+
+\newpage
+

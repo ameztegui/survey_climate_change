@@ -1,0 +1,91 @@
+---
+title: | 
+  | Supplementary Material S1 
+  | Socio-demographic information of respondents
+output: 
+    pdf_document:
+        fig_width: 8
+        fig_height: 6
+---
+
+```{r "setup", echo =F, warning=F, message=F}
+rm(list=ls())
+
+
+knitr::opts_knit$set(root.dir = "D:/Activity/Adaptation to CC/Canadian Forest Sector/")
+knitr::opts_chunk$set(echo =F)
+# knitr::opts_knit$set(root.dir = '../')
+```
+
+```{r, echo =F, warning=F, message=F}
+source("./code/survey_functions.R")
+load("./data/SurveyData_Clean_Weighted.Rdata")
+library(tidyverse)
+```
+
+
+
+```{r, echo=FALSE, results="hide", warnings=F, message=FALSE}
+
+provinces <- survey %>% 
+    group_by (Province) %>% 
+    dplyr::summarize(n=n())
+stakeholders <- survey %>% group_by (Stakeholder) %>% dplyr::summarise(n=n())
+```
+
+The most represented province was Québec, with `r filter(provinces,Province =="Quebec")$n` respondents (`r round(filter(provinces,Province =="Quebec")$n*100/length(survey$Province),1)`%), followed by Ontario (n = `r filter(provinces,Province =="Ontario")$n`, `r round(filter(provinces,Province =="Ontario")$n*100/length(survey$Province),1)`%), British Columbia (n = `r filter(provinces,Province =="British Columbia")$n`, `r round(filter(provinces,Province =="British Columbia")$n*100/length(survey$Province),1)`%), and Alberta (n = `r filter(provinces,Province =="Alberta")$n`, `r round(filter(provinces,Province =="Alberta")$n*100/length(survey$Province),1)`%), while New Brunswick was the least represented (n =`r filter(provinces,Province =="New Brunswick")$n`, `r round(filter(provinces,Province =="New Brunswick")$n*100/length(survey$Province),1)`%). The proportion of respondents by province broadly corresponded to the relative importance of their forest sector, according to the Labour Force Survey: Québec: 33%, British Columbia: 27%, Ontario: 20%, Alberta: 10%, New Brunswick: 6% (Canadian Forest Service 2014). Almost half the respondents worked for either the Provincial (n = `r filter(stakeholders,Stakeholder =="Provincial Gov.")$n`, `r round(filter(stakeholders,Stakeholder =="Provincial Gov.")$n*100/length(survey$Stakeholder),1)` %) or the Federal Government (n = `r filter(stakeholders,Stakeholder =="Federal Gov.")$n`, `r round(filter(stakeholders,Stakeholder =="Federal Gov.")$n*100/length(survey$Stakeholder),1)`%). Academic researchers and students accounted for `r round(filter(stakeholders,Stakeholder =="Academia")$n*100/length(survey$Stakeholder),1)`% and `r round(filter(stakeholders,Stakeholder =="Student")$n*100/length(survey$Stakeholder),1)`% of the total number of respondents, respectively, whereas `r round(filter(stakeholders,Stakeholder =="Industry")$n*100/length(survey$Stakeholder),1)+ round(filter(stakeholders,Stakeholder =="Other private")$n*100/length(survey$Stakeholder),1)`% of the respondents (n = `r (filter(stakeholders,Stakeholder =="Industry")$n) + (filter(stakeholders,Stakeholder =="Other private")$n)`) reported to work for the private sector (`r filter(stakeholders,Stakeholder =="Industry")$n` 
+for forest industries and `r filter(stakeholders,Stakeholder =="Other private")$n` for consulting or other private enterprises). 
+
+All stakeholders had similar age and gender structure, with the exception of students, where there was a greater proportion of young individuals and also a greater proportion of females (55.7% vs. 26.2% for all other groups, Figure S1.1 & Figure S1.2). Moreover, there were also significant differences among stakeholders in the distribution of the educational level  (Figure S1.3). The number of individuals with a doctorate was higher for Academia and the Federal Government than for the other groups, whereas the proportion of individuals who have not received university education was highest in the industrial sector.           
+\newpage
+
+```{r Figure 1_1, echo = FALSE, message=FALSE, warning=FALSE}
+
+ chisq (dataframe=survey, dep="Gender", indep="Stakeholder","right", print_stats =F) +
+     annotate("text",x=c(1,2,3,4,5,6),y=1.05,ymax=1.10,
+              label=c("a","a","a","a","a","b"),
+              size=5) 
+    
+```
+
+
+**Figure S1.1.** Distribution by gender and stakeholder for respondents a survey on perceptions of climate change and its impacts on forest ecosystems in Canada. Different letters above bars indicate significant differences in gender distribution across stakeholders, according to Chi-square statistics after Bonferroni correction for multiple comparisons (n= 974).
+
+
+
+
+```{r Figure 1_2, echo = FALSE, message=FALSE, warning=FALSE}
+
+  chisq (dataframe=survey, dep="Age", indep="Stakeholder","right", print_stats = F) +
+     annotate("text",x=c(1,2,3,4,5,6),y=1.05,ymax=1.10,
+              label=c("a","a","b","b","ab","c"),
+              size=5)
+     
+```
+**Figure S1.2.** Distribution by age and stakeholder for respondents in a survey on perceptions of climate change and its impacts on forest ecosystems in Canada. Different letters above bars indicate significant differences in age distribution across stakeholders, according to Chi-square statistics after Bonferroni correction for multiple comparisons (n= 974).
+
+```{r Figure 1_3, echo = FALSE, message=FALSE, warning=FALSE}
+
+  chisq (dataframe=survey, dep="Education", indep="Stakeholder","right",print_stats = F) +
+     annotate("text",x=c(1,2,3,4,5,6),y=1.05, ymax=1.10,
+              label=c("a","b","c","b","d","e"),size=5)
+     
+```
+**Figure S1.3.** Distribution by maximum education level attained and stakeholder for respondents in a survey on perceptions of climate change and its impacts on forest ecosystems in Canada. Different letters above bars indicate significant differences in distribution of education levels across stakeholders, according to Chi-square statistics after Bonferroni correction for multiple comparisons (n= 974).
+
+
+```{r Figure 1_4, echo = FALSE, message=FALSE, warning=FALSE}
+
+  chisq (dataframe=survey, dep="Province", indep="Stakeholder","right", print_stats = F) +
+     annotate("text",x=c(1,2,3,4,5,6),y=1.05,ymax=1.10,
+              label=c("a","b","c","d","d","e"),size=5)
+     
+```
+**Figure S1.4.** Distribution by Province and stakeholder for respondents in a survey on perceptions of climate change and its impacts on forest ecosystems in Canada. Different letters above bars indicate significant differencesin distribution of provinces across stakeholders, according to Chi-square statistics after Bonferroni correction for multiple comparisons (n= 974).
+
+```{r Figure 1_5, echo = FALSE, message=FALSE, warning=FALSE}
+
+     survey_comparison (dataframe=survey,dep="Political_View",indep="Stakeholder")
+
+```
+**Figure S1.5.** Distribution of political view of respondents in a survey on perceptions of climate change and its impacts on forest ecosystems in Canada as a function of stakeholder. Values below the boxplots are the mean political view for the stakeholder in a scale ranging from 1 (very liberal) to 7 (very conservative). Different letters above the boxplot indicate significant differences in the political view for those stakeholders For all boxplots, the central black line indicates the median value, lower and upper hinges indicate the first and third quartile and lower and upper limit of the vertical lines encompass the 95% interval.

@@ -1,0 +1,124 @@
+---
+title: | 
+  | Supplementary Material S3 
+  | Survey responses by province of respondent
+output: 
+    pdf_document:
+        fig_width: 5.5
+        fig_height: 7.5
+---
+```{r package options, include =F}
+knitr::opts_knit$set(root.dir = '../')
+
+```
+
+
+```{r, echo=FALSE, results="hide", warnings=F, message=FALSE}
+load("./data/SurveyData_Clean_Weighted.Rdata")
+source("./code/survey_functions.R")
+source("./code/02_Likert.R")
+
+library(tidyverse)
+```
+
+\newpage
+
+```{r FigS3.1 , echo=FALSE,  warnings=F, message=FALSE}
+letters_gen_imp <- mean_likert(survey,"Province", 5:10) %>%
+    arrange(Province)
+
+    gen_imp_province <- likert(gen_imp, grouping = survey$Province)  
+    gen_imp_province$results$Group <- factor (gen_imp_province$results$Group,
+                                              levels = rev(levels(gen_imp_province$results$Group)))
+    colnames(gen_imp_province$results) <- c("Group","Item", "Strongly\n disagree", "Disagree","Slightly\n disagree",
+                                      "Neutral", "Slightly\n agree", "Agree", "Strongly\n agree")
+
+    plot(gen_imp_province, ordered=F, text.size=3,plot.percents=T, wrap=100 ) +
+        theme(axis.text.y = element_text(size = 9),
+              axis.text.x = element_text (size = 9),
+              strip.text = element_text(size = 8, face="bold", hjust=0),
+              strip.background = element_rect (fill= "white", colour="white"),
+              legend.text = element_text(size = 8)) +
+        guides(fill=guide_legend("",nrow=1)) +
+        annotate("text", x=5, y =-98, size=3, fontface=1,hjust=0,
+                 label=unlist(letters_gen_imp[1,-1])) + #BC
+        annotate("text", x=4, y =-98, size=3, fontface=1,hjust=0,
+                label=unlist(letters_gen_imp[2,-1]))  + # AB
+        annotate("text", x=3, y =-98, size=3, fontface=1,hjust=0,
+                 label=unlist(letters_gen_imp[3,-1]))  + # ON
+        annotate("text", x=2, y =-98, size=3, fontface=1,hjust=0,
+                 label=unlist(letters_gen_imp[4,-1]))  + # QC
+        annotate("text", x=1, y =-98, size=3, fontface=1,hjust=0,
+                 label=unlist(letters_gen_imp[5,-1]))  # NB
+
+```
+
+**Figure S3.1** Responses by province for the first section of a survey conducted to capture perceptions on climate change and its impacts across the Canadian forest sector. The first section asked respondents about the general impacts of climate change. Percentages for each statement represent, from left to right, the amount of disagreements (strongly disagree, disagree, slightly disagree), neutral responses, and agreements (slightly agree, agree, strongly agree). Different letters beside the bars indicate significant differences in the distribution of responses across stakeholder types after a Kruskal-Wallis non-parametric test (n= 974).
+
+
+
+```{r Fig S3.2, echo=FALSE,  warnings=F, message=FALSE,fig.width=5.6, fig.height=7.5}
+letters_for_imp <- mean_likert(survey,"Province", 11:17) %>%
+    arrange(Province)
+
+    for_imp_province <- likert(for_imp, grouping = survey$Province)  
+    for_imp_province$results$Group <- factor (for_imp_province$results$Group, 
+                                           levels = rev(levels(for_imp_province$results$Group)))
+    colnames(for_imp_province$results) <- c("Group","Item", "Strongly\n disagree", "Disagree","Slightly\n disagree",
+                                      "Neutral", "Slightly\n agree", "Agree", "Strongly\n agree")
+    
+    plot(for_imp_province, ordered=F, text.size=3,plot.percents=T, wrap=100 ) +
+        theme(axis.text.y = element_text(size = 9),
+              axis.text.x = element_text (size = 9),
+              strip.text = element_text(size = 7, face="bold", hjust=0),
+              strip.background = element_rect (fill= "white", colour="white"),
+              legend.text = element_text(size = 8)) +
+        guides(fill=guide_legend("",nrow=1)) +
+        annotate("text", x=5, y =-98, size=3, fontface=1,hjust=0,
+                 label=unlist(letters_for_imp[1,-1])) + #BC
+        annotate("text", x=4, y =-98, size=3, fontface=1,hjust=0,
+                label=unlist(letters_for_imp[2,-1]))  + # AB
+        annotate("text", x=3, y =-98, size=3, fontface=1,hjust=0,
+                 label=unlist(letters_for_imp[3,-1]))  + # ON
+        annotate("text", x=2, y =-98, size=3, fontface=1,hjust=0,
+                 label=unlist(letters_for_imp[4,-1]))  + # QC
+        annotate("text", x=1, y =-98, size=3, fontface=1,hjust=0,
+                 label=unlist(letters_for_imp[5,-1]))  # NB
+
+```
+
+**Figure S3.2** Responses by province for the second section of a survey conducted to capture perceptions on climate change and its impacts across the Canadian forest sector. The second section asked respondents about the impacts of climate change on forest ecosystems. Percentages for each statement represent, from left to right, the amount of disagreements (strongly disagree, disagree, slightly disagree), neutral responses, and agreements (slightly agree, agree, strongly agree). Different letters beside the bars indicate significant differences in the distribution of responses across stakeholder types after a Kruskal-Wallis non-parametric test (n= 974).
+
+```{r Fig S3.3, echo=FALSE,  warnings=F, message=FALSE,fig.width=6, fig.height=7.5}
+
+letters_current_pract <- mean_likert(survey,"Province", 18:22) %>%
+    arrange(Province)
+
+    current_province <- likert(current, grouping = survey$Province)
+    current_province$results$Group <- factor (current_province$results$Group, 
+                                           levels = rev(levels(current_province$results$Group)))
+    colnames(current_province$results) <- c("Group","Item", "Strongly\n disagree", "Disagree","Slightly\n disagree",
+                                      "Neutral", "Slightly\n agree", "Agree", "Strongly\n agree")
+
+    
+    plot(current_province, ordered=F, text.size=3,plot.percents=T, wrap=100) +
+        theme(axis.text.y = element_text(size = 9),
+              axis.text.x = element_text (size = 9),
+              strip.text = element_text(size = 7, face="bold", hjust=0),
+              strip.background = element_rect (fill= "white", colour="white"),
+              legend.text = element_text(size = 8)) +
+        guides(fill=guide_legend("",nrow=1)) +
+        annotate("text", x=5, y =-98, size=3, fontface=1,hjust=0,
+                 label=unlist(letters_current_pract[1,-1])) + #BC
+        annotate("text", x=4, y =-98, size=3, fontface=1,hjust=0,
+                label=unlist(letters_current_pract[2,-1]))  + # AB
+        annotate("text", x=3, y =-98, size=3, fontface=1,hjust=0,
+                 label=unlist(letters_current_pract[3,-1]))  + # ON
+        annotate("text", x=2, y =-98, size=3, fontface=1,hjust=0,
+                 label=unlist(letters_current_pract[4,-1]))  + # QC
+        annotate("text", x=1, y =-98, size=3, fontface=1,hjust=0,
+                 label=unlist(letters_current_pract[5,-1]))  # NB
+
+
+```
+**Figure S3.3** Responses by province for the third section of a survey conducted to capture perceptions on climate change and its impacts across the Canadian forest sector. The third section asked respondents about the suitability of current forestry practices to face the impacts of climate change. Percentages for each statement represent, from left to right, the amount of disagreements (strongly disagree, disagree, slightly disagree), neutral responses, and agreements (slightly agree, agree, strongly agree). Different letters beside the bars indicate significant differences in the distribution of responses across stakeholder types after a Kruskal-Wallis non-parametric test (n= 974).
