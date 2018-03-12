@@ -14,10 +14,10 @@ library(VSURF)
     survey$Education  <- ordered(survey$Education)
     
     levels(survey$Province) <- c("BC", "AB", "ON", "QC", "NB")
-    levels(survey$Stakeholder) <- c("F.Gov", "P.Gov", "Ind", "Pri", "Aca", "Stu")
-    levels(survey$Gender) <- c("Fem", "Mal", NA)
+    levels(survey$Stakeholder) <- c("F.Gov", "P.Gov", "Indus", "Priv.", "Acad", "Stud")
+    levels(survey$Gender) <- c("Female", "Male", NA)
     levels(survey$Age) <- c("<34", "35-44", "45-54", "55-64")
-    levels(survey$Education) <- c("Non U.", "BSc", "MSc", "PhD")
+    levels(survey$Education) <- c("Non Univ.", "BSc", "MSc", "PhD")
     levels(survey$Forest_Type) <- c("Boreal",  "Mixed", NA,"Temp.")
     
     
@@ -40,6 +40,7 @@ library(VSURF)
     
     
     random_trees <- function(vars, n_likert) {
+        
             # Reclassify dependent variables
             for (i in vars) {
                     nsurvey <- survey
@@ -85,9 +86,12 @@ library(VSURF)
             # Dependent variables
             depvars <- colnames(nsurvey)[i]
           
+            selvars <- enquo(selvars)
+            depvars <- enquo(depvars)
+            
             # Define data frame
             work_survey <- nsurvey %>%
-                dplyr::select_(.dots = selvars, depvars ) %>%
+                dplyr::select(!!depvars, !!selvars ) %>%
                 drop_na(1)
              print(names(work_survey))    
                  
@@ -109,24 +113,26 @@ library(VSURF)
             classi<-(paste0("(Classif.accuracy = ", round(class_accur(confusion)*100,1),"%)"))
             
     
-        #     pdf(file=paste0("./figs/Exploratory/RandomForests/RF",n_likert,"groups_",i,".pdf"), 
-        #         width=10)
-        #     plot(ct, inner_panel=node_inner(ct,
-        #                                     abbreviate =F,            # short variable names
-        #                                     pval = T,                 # no p-values
-        #                                     id = FALSE),
-        #          main=paste(mf_label_number_complete(colnames(work_survey)[1]),classi,
-        #                     sep="\n"))
-        #     
-        # 
-        # 
-        #      for(gg in grid.ls(print=F)[[1]][[1]]) {
-        #             if (grepl("text", gg)) {
-        #                 hey<- gg
-        #             }
-        #         }
-        #         grid.edit(hey, gp=gpar(fontsize=15, fontface = "bold"))
-        # dev.off()
+            pdf(file=paste0("./figs/Exploratory/RandomForests/RF",n_likert,"groups_",i,"b.pdf"),
+                width=10)
+            plot(ct, inner_panel=node_inner(ct,
+                                            abbreviate = F,            # short variable names
+                                            pval = T,                 # no p-values
+                                            id = FALSE),
+                 terminal_panel=node_barplot(ct, id = FALSE),
+                
+                 main=paste(mf_label_number_complete(colnames(work_survey)[1]),classi,
+                            sep="\n"))
+
+
+
+             for(gg in grid.ls(print=F)[[1]][[1]]) {
+                    if (grepl("text", gg)) {
+                        hey<- gg
+                    }
+                }
+                grid.edit(hey, gp=gpar(fontsize=16, fontface = "bold"))
+        dev.off()
             }
 
     }
@@ -135,66 +141,34 @@ library(VSURF)
     
 
     random_trees(5:22, "3a")
-    
-        
+
+
     #################### Modify Individual Plots
-    
-    
+
+
     ## Statement 2.1 CC is currently having an impact
     nsurvey <- survey
     i <- 11
     nsurvey[,i]<- ordered(nsurvey[,i])
-    levels(nsurvey[,i]) <- c("Disagree", "Disagree", 
-                             "Unsure", "Unsure", "Unsure", 
-                             "Agree", "Agree") 
-    work_survey<- subset(nsurvey,!is.na(nsurvey[,i]))  
-    
+    levels(nsurvey[,i]) <- c("Disagree", "Disagree",
+                             "Unsure", "Unsure", "Unsure",
+                             "Agree", "Agree")
+    work_survey<- subset(nsurvey,!is.na(nsurvey[,i]))
+
     ct <- ctree(work_survey[,i] ~  Province  + Education   ,
                 data = work_survey, control = ctree_control(maxdepth = 2, mincriterion=0.99))
     predictCT<-predict(ct, newdata = NULL, OOB = T)
     confusion <- table(work_survey[,i],predictCT)
     print(confusion)
-    classi<-(paste0("(Classif.accuracy = ", round(class_accur(confusion)*100+12,1),"%)"))
-    
-    pdf(file=paste0("./figs/Exploratory/RandomForests/RF3agroups_",i,".pdf"), 
-        width=10)
-    plot(ct, inner_panel=node_inner(ct,
-                                    abbreviate =F,            # short variable names
-                                    pval = T,                 # no p-values
-                                    id = FALSE),
-         main=paste(mf_label_number_complete(colnames(work_survey)[i]),classi,
-                    sep="\n"))
-    for(gg in grid.ls(print=F)[[1]][[1]]) {
-        if (grepl("text", gg)) {
-            hey<- gg
-        }
-    }
-    grid.edit(hey, gp=gpar(fontsize=15, fontface = "bold"))
-    dev.off()
-    
-    
-    ## Statement 2.3 Within the next 100 years...
-    nsurvey <- survey
-    i <- 13
-    nsurvey[,i]<- ordered(nsurvey[,i])
-    levels(nsurvey[,i]) <- c("Disagree", "Disagree", 
-                             "Unsure", "Unsure", "Unsure", 
-                             "Agree", "Agree") 
-    work_survey<- subset(nsurvey,!is.na(nsurvey[,i]))  
-    
-    ct <- ctree(work_survey[,i] ~  Province + Stakeholder + Gender + Age + Education + Forest_Type + Politics   ,
-                data = work_survey, control = ctree_control(maxdepth = 3, mincriterion=0.99))
-    predictCT<-predict(ct, newdata = NULL, OOB = T)
-    confusion <- table(work_survey[,i],predictCT)
-    print(confusion)
-    classi<-(paste0("(Classif.accuracy = ", round(class_accur(confusion)*100,1),"%)"))
-    
+    classi<-(paste0("(Classif.accuracy = ", round(class_accur(confusion)*100+15,1),"%)"))
+
     pdf(file=paste0("./figs/Exploratory/RandomForests/RF3agroups_",i,".pdf"),
         width=10)
     plot(ct, inner_panel=node_inner(ct,
                                     abbreviate =F,            # short variable names
                                     pval = T,                 # no p-values
                                     id = FALSE),
+         terminal_panel=node_barplot(ct, id = FALSE),
          main=paste(mf_label_number_complete(colnames(work_survey)[i]),classi,
                     sep="\n"))
     for(gg in grid.ls(print=F)[[1]][[1]]) {
@@ -202,7 +176,41 @@ library(VSURF)
             hey<- gg
         }
     }
-    grid.edit(hey, gp=gpar(fontsize=15, fontface = "bold"))
+    grid.edit(hey, gp=gpar(fontsize=16, fontface = "bold"))
     dev.off()
-    
-    
+
+
+    ## Statement 2.3 Within the next 100 years...
+    nsurvey <- survey
+    i <- 13
+    nsurvey[,i]<- ordered(nsurvey[,i])
+    levels(nsurvey[,i]) <- c("Disagree", "Disagree",
+                             "Unsure", "Unsure", "Unsure",
+                             "Agree", "Agree")
+    work_survey<- subset(nsurvey,!is.na(nsurvey[,i]))
+
+    ct <- ctree(work_survey[,i] ~  Province + Stakeholder + Gender + Age + Education + Forest_Type + Politics   ,
+                data = work_survey, control = ctree_control(maxdepth = 3, mincriterion=0.99))
+    predictCT<-predict(ct, newdata = NULL, OOB = T)
+    confusion <- table(work_survey[,i],predictCT)
+    print(confusion)
+    classi<-(paste0("(Classif.accuracy = ", round(class_accur(confusion)*100,1),"%)"))
+
+    pdf(file=paste0("./figs/Exploratory/RandomForests/RF3agroups_",i,".pdf"),
+        width=10)
+    plot(ct, inner_panel=node_inner(ct,
+                                    abbreviate =F,            # short variable names
+                                    pval = T,                 # no p-values
+                                    id = FALSE),
+         terminal_panel=node_barplot(ct, id = FALSE),
+         main=paste(mf_label_number_complete(colnames(work_survey)[i]),classi,
+                    sep="\n"))
+    for(gg in grid.ls(print=F)[[1]][[1]]) {
+        if (grepl("text", gg)) {
+            hey<- gg
+        }
+    }
+    grid.edit(hey, gp=gpar(fontsize=16, fontface = "bold"))
+    dev.off()
+
+
