@@ -491,11 +491,12 @@ wtd_describe_simple <- function(dataframe, columns) {
 mean_likert <- function (df, grouping, depen) {
     
     results <- list()
-    t <- as.numeric(min(depen))
-    for (i in depen) {
-   
-        depen <- colnames(df)[i]
-        krus <- kruskal(df[[depen]], df[[grouping]], group=TRUE, p.adj="none")
+    
+    for (i in seq_along(depen)) {
+
+        col <- depen[i]
+        depend <- colnames(df)[col]
+        krus <- kruskal(df[[depend]], df[[grouping]], group=TRUE, p.adj="none")
         
         if (grouping == "Stakeholder") {
             krus$groups$Stakeholder <- factor(row.names(krus$groups),
@@ -510,18 +511,14 @@ mean_likert <- function (df, grouping, depen) {
                                                     "Quebec", "New Brunswick"))
         }
 
-            
-
-        krus$groups[[depen]] <- krus$groups$groups
-        results[[i-t+1]] <- krus$groups %>%
+        krus$groups[[depend]] <- krus$groups$groups
+        results[[i]] <- krus$groups %>%
             select(3,4)
         
     }
     results  %>%
         reduce(left_join)
 }
-
-
 
 
  # NEPFUNCTION: variation of responses across NEP, faceted by categ. variable ----------------------
