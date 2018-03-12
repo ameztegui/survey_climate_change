@@ -27,16 +27,16 @@ library(VSURF)
       
     
     
-    variables_incl <- lapply(select_vars_fivelev,function(l) l[[2]]) 
+    variables_incl <- lapply(select_vars_5,function(l) l[[2]]) 
     
     for (i in 5:5) { 
         potvars<- c("Province", "Stakeholder" , "Gender", "Age", 
                     "Education", "Forest_Type", "Politics")
-        selvars <- potvars[unlist(variables_incl[i-4])]
+        selvars <- na.omit(potvars[unlist(variables_incl[i-4])])
         depvars <- colnames(survey)[i]
       
         work_survey <- survey %>%
-            dplyr::select_(.dots = selvars, depvars ) %>%
+            dplyr::select( selvars, depvars ) %>%
             filter(complete.cases((depvars)))
          print(names(work_survey))    
     }      
