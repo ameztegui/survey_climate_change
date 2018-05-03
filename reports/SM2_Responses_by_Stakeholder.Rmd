@@ -29,11 +29,15 @@ library(tidyverse)
 
 ```{r FigS2.1 , echo=FALSE,  warnings=F, message=FALSE}
 
-
-letters_gen_imp <- mean_likert(survey,"Stakeholder", 5:10) %>%
+# This is to reduce number of plots and avoid redundancy (required by editor)
+letters_gen_imp <- mean_likert(survey,"Stakeholder", c(6,7,9)) %>%
     arrange(Stakeholder)
+new_gen_imp <- fct_survey[c(6,7,9)]
+colnames(new_gen_imp) <- mf_label_number_complete(colnames(new_gen_imp))
 
-gen_imp_stake <- likert(gen_imp, grouping = survey$Stakeholder) 
+
+
+gen_imp_stake <- likert(new_gen_imp, grouping = fct_survey$Stakeholder) 
 gen_imp_stake$results$Group <- factor (gen_imp_stake$results$Group, 
                                            levels = rev(levels(gen_imp_stake$results$Group)))
 colnames(gen_imp_stake$results) <- c("Group","Item", "Strongly\n disagree", "Disagree","Slightly\n disagree",
@@ -68,11 +72,14 @@ colnames(gen_imp_stake$results) <- c("Group","Item", "Strongly\n disagree", "Dis
 
 ```{r Fig S2.2, echo=FALSE,  warnings=F, message=FALSE,fig.width=5.6, fig.height=7.5}
 
-
-letters_for_imp <- mean_likert(survey,"Stakeholder", 11:17) %>%
+# This is to reduce number of plots and avoid redundancy (required by editor)
+letters_for_imp <- mean_likert(survey,"Stakeholder", c(13,14,15,17)) %>%
     arrange(Stakeholder)
+new_for_imp <- fct_survey[c(13,14,15,17)]
+colnames(new_for_imp) <- mf_label_number_complete(colnames(new_for_imp))
 
-for_imp_stake <- likert(for_imp, grouping = survey$Stakeholder) 
+
+for_imp_stake <- likert(new_for_imp, grouping = survey$Stakeholder) 
     for_imp_stake$results$Group <- factor (for_imp_stake$results$Group, 
                                            levels = rev(levels(for_imp_stake$results$Group)))
     colnames(for_imp_stake$results) <- c("Group","Item", "Strongly\n disagree", "Disagree","Slightly\n disagree",
@@ -106,10 +113,14 @@ for_imp_stake <- likert(for_imp, grouping = survey$Stakeholder)
 
 ```{r Fig S2.3, echo=FALSE,  warnings=F, message=FALSE,fig.width=6, fig.height=7.5}
 
-letters_current_pract <- mean_likert(survey,"Stakeholder", 18:22) %>%
+# This is to reduce number of plots and avoid redundancy (required by editor)
+letters_current_pract <- mean_likert(survey,"Stakeholder", c(18,19,22)) %>%
     arrange(Stakeholder)
+new_current <- fct_survey[c(18,19,22)]
+colnames(new_current) <- mf_label_number_complete(colnames(new_current))
 
-current_stake <- likert(current, grouping = survey$Stakeholder) 
+
+current_stake <- likert(new_current, grouping = survey$Stakeholder) 
     current_stake$results$Group <- factor (current_stake$results$Group, 
                                            levels = rev(levels(current_stake$results$Group)))
     colnames(current_stake$results) <- c("Group","Item", "Strongly\n disagree", "Disagree","Slightly\n disagree",

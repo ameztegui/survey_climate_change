@@ -40,7 +40,7 @@ source("./code/02_Likert.R")
         guides( fill=guide_legend("",nrow=1))    
 
     pdf(file="./figs/Final/Figure_01.pdf", width=12.2, height=18)
-        multiplot (Fig2a, Fig2b, Fig2c, cols=1)
+        multiplot (Fig1a, Fig1b, Fig1c, cols=1)
     dev.off()
 
   
