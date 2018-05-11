@@ -39,7 +39,7 @@ source("./code/02_Likert.R")
         legend.text = element_text(size = 15)) +
         guides( fill=guide_legend("",nrow=1))    
 
-    pdf(file="./figs/Final/Figure_01.pdf", width=12.2, height=18)
+    tiff(file="./figs/Final/Figure_01.tif", width=12.2, height=18, res = 300, units = "in", compression = "lzw")
         multiplot (Fig1a, Fig1b, Fig1c, cols=1)
     dev.off()
 
@@ -61,8 +61,8 @@ source("./code/02_Likert.R")
     letters_fig2 <- mean_likert(survey,"Stakeholder", c(5,8,10,11,12,16,20,21)) %>%
         arrange(Stakeholder)
     
-    
-    pdf(file="./figs/Final/Figure_02.pdf", width=9, height=16)
+    tiff(file="./figs/Final/Figure_02.tif", width=9, height=16, res = 300, units = "in", compression = "lzw")
+    # pdf(file="./figs/Final/Figure_02.pdf", width=9, height=16)
         plot(fig2_stake, ordered=F, text.size=4,plot.percents=T , wrap=160) +
             theme(axis.text.y = element_text(size = 14),
                 axis.text.x = element_text (size = 12),
