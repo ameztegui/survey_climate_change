@@ -12,7 +12,7 @@ library(agricolae)
 library(Hmisc)
 library(reshape2)
 library(weights)
-library(fifer)
+# library(fifer)
 library(tidyverse)
 
 
@@ -423,7 +423,9 @@ describe_simple <- function(dataframe, columns) {
       # Create the dataset with the summarized data
      
       # Transpose the database from 'wide' to "long' format
-      practices<-melt(data=dataframe,id.vars=c("Response.ID","Province","Stakeholder","Gender","Age","Education","Forest_Type","Politics","nep"),measure.vars=columns)
+      practices <- melt(data=dataframe,
+                      id.vars=c("Response.ID","Province","Stakeholder","Gender","Age","Education","Forest_Type","Politics","nep"),
+                      measure.vars=columns)
       names(practices)[names(practices) == 'variable'] <- 'Practice'         
 
       ## Analyze the data 
@@ -434,6 +436,7 @@ describe_simple <- function(dataframe, columns) {
       Tuk$groups <- Tuk$groups %>%
           mutate(rank = dense_rank(-value))
       result <- as.data.frame(Tuk$groups)
+      print(result)
 }
     
 wtd_describe_simple <- function(dataframe, columns) {
@@ -444,44 +447,34 @@ wtd_describe_simple <- function(dataframe, columns) {
                         Question=factor(),
                         Letter=character()) 
       
-      # Create the dataset with the summarized data
+  # Transpose the database from 'wide' to "long' format
+      practices <- dataframe %>%
+          gather(key = "Practice",
+                 value = "value",
+                 colnames(dataframe)[columns]) %>%
+          select(Response.ID, Province, Stakeholder, Gender, Age, Education, Forest_Type, Politics, nep,
+                 Weights, Practice, value)
+          
+         
+  ## Analyze the data 
       
-      #z <- data.frame(describe(dataframe[,min(columns):max(columns)]))
-      #z$Question <-colnames(dataframe)
-      #print(z)
-      
-      #      for (i in min(columns): max(columns)) {
-      #           dep<-colnames(dataframe)[i]
-      #           print(dep)
-      #      
-      #           # Subset data
-      #           data<-subset(dataframe, !is.na(dataframe[dep]))
-      
-      # Transpose the database from 'wide' to "long' format
-      practices<-melt(data=dataframe,
-                      id.vars=c("Response.ID","Province","Stakeholder","Gender","Age","Education","Forest_Type","Politics","nep", "Weights"),
-                      measure.vars=columns,
-                      variable.name="Practice",
-                      value.name="value")
-      
-      ## Analyze the data 
-      
-      anova.test<-aov(formula(value~Practice), data=practices,weights=Weights)
+      anova.test <- aov(formula(value~Practice), data=practices, weights=Weights)
       
         # Merge mean and tukey groups with weighted means
            
            # Tuk HSD groups (and delete white space in name for merging)
-           Tuk<-HSD.test (anova.test, trt='Practice')     
-           Tuk$groups$CleanTrat<-trimws(Tuk$groups$trt, which = "r")
+           Tuk<- HSD.test (anova.test, trt='Practice')     
+           Tuk$groups$CleanTrat <- trimws(rownames(Tuk$groups), which = "r")
       
            # Weighted means
            wtd_means<- ddply(practices, .(Practice), function(z) wtd.mean(z$value, z$Weights))
            names(wtd_means)[names(wtd_means)=="V1"] <- "wtd_mean"          
         
            # Merge both tables and print nice result
-           result<-merge(x=Tuk$groups,y=wtd_means, by.x="CleanTrat",by.y="Practice")
+           result <- left_join(Tuk$groups, wtd_means, by = c("CleanTrat" = "Practice"))
+               
            ordered_result <- result[with(result, order(-wtd_mean)),]
-           print(ordered_result[,c("CleanTrat","wtd_mean","M","means")])       
+           print(ordered_result[,c("CleanTrat","wtd_mean","groups","value")])       
    
  }
  

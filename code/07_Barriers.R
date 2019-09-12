@@ -20,32 +20,37 @@ library(scales)
 library(reshape2)
 library(party)
 library(tidyverse)
+library(plyr)
           
           
 ## Barriers to implementation (49-63) ######
 
 # Provide the overall max-diff score and assess differences
-    print(describe_simple(survey,49:63))
-    # wtd_describe_simple(survey,49:63)
+    describe_simple(survey,49:63)
+    wtd_describe_simple(survey,49:63)
 
 # Create dataframe with the score per province
+    detach(package:plyr)    
+    library(dplyr)
     barriers_prov <- survey %>%
         gather(49:63,key="Barrier", value = "score") %>%
         group_by(Barrier, Province) %>%
             dplyr::summarise(score = mean(score, na.rm=T)) %>%
         group_by(Province) %>%
             dplyr::mutate(rank = dense_rank(-score))%>%
+        ungroup() %>%
         mutate(Barriers = mf_labeller_bump(Barrier),
                Province = fct_recode(Province, 
                                      "British \n Columbia" = "British Columbia",
                                      "New\nBrunswick" = "New Brunswick"))
-        
+    
     barriers_stake <- survey %>%
         gather(49:63,key="Barrier", value = "score") %>%
         group_by(Barrier, Stakeholder) %>%
         dplyr::summarise(score = mean(score, na.rm=T)) %>%
         group_by(Stakeholder) %>%
         dplyr::mutate(rank = dense_rank(-score)) %>%
+        ungroup() %>%
         mutate(Barriers = mf_labeller_bump(Barrier),
                Stakeholder = fct_recode(Stakeholder, 
                                       "Industry" = "Industry",
@@ -112,6 +117,27 @@ library(tidyverse)
         gt$layout$clip[gt$layout$name == "panel"] <- "off"
         grid.draw(gt)
     dev.off()
+    
+# Ridgeline plots ---------------------------------------------------------
+    
+barriers <- melt(data=survey,
+                  id.vars=c("Response.ID","Province","Stakeholder","Gender","Age","Education","Forest_Type","Politics","nep"),
+                  measure.vars=49:63)
+names(barriers)[names(barriers) == 'variable'] <- 'Barriers'      
+    
+
+barriers %>%
+    ggplot( aes(x = value, y = Barriers)) +
+    geom_density_ridges(aes(fill = Province), scale = 2, size = 0.75, rel_min_height = 0.02) +
+    theme_ridges() +
+    scale_x_continuous(limits=c(1, 90), expand = c(0.01, 0))
+    
+barriers %>%
+    ggplot( aes(x = value, y = Barriers)) +
+    geom_density_ridges(aes(fill = Stakeholder), scale = 2, size = 0.75, rel_min_height = 0.02) +
+    theme_ridges() +
+    scale_x_continuous(limits=c(1, 90), expand = c(0.01, 0))
+
 
 # ANOVA for barriers to implementation --------------------------------------------
     # 

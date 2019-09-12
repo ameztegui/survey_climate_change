@@ -30,12 +30,15 @@ survey <- survey %>%
     wtd_describe_simple(survey,32:47)
 
 # Create dataframe with the score per province
+    detach(package:plyr)    
+    library(dplyr)
     practice_prov <- survey %>%
-        gather(32:47,key="Practice", value = "score") %>%
+        gather(32:47, key="Practice", value = "score") %>%
         group_by(Practice, Province) %>%
-            dplyr::summarise(score = mean(score, na.rm=T)) %>%
+            summarise(score = mean(score, na.rm=T)) %>%
         group_by(Province) %>%
-            dplyr::mutate(rank = dense_rank(-score))%>%
+            mutate(rank = dense_rank(-score))%>%
+        ungroup() %>%
         mutate(Practices = mf_labeller_bump(Practice),
                Province = fct_recode(Province, 
                                      "British \n Columbia" = "British Columbia",
@@ -47,6 +50,7 @@ survey <- survey %>%
         dplyr::summarise(score = mean(score, na.rm=T)) %>%
         group_by(Stakeholder) %>%
         dplyr::mutate(rank = dense_rank(-score)) %>%
+        ungroup() %>%
         mutate(Practices = mf_labeller_bump(Practice),
                Stakeholder = fct_recode(Stakeholder, 
                                         "Provincial\nGovernment" = "Provincial Gov.",
@@ -118,52 +122,66 @@ survey <- survey %>%
 # Ridgeline plots ---------------------------------------------------------
     practice_prov %>%
         arrange(score) %>%
-    ggplot( aes(x = score, y = Practices, group = Practices)) +
+        ggplot( aes(x = score, y = Practices, group = Practices)) +
         geom_density_ridges(scale = 2, size = 0.75, rel_min_height = 0.02) +
         theme_ridges() +
         scale_x_continuous(limits=c(1, 90), expand = c(0.01, 0))
+
+    practices <- melt(data=survey,
+                     id.vars=c("Response.ID","Province","Stakeholder","Gender","Age","Education","Forest_Type","Politics","nep"),
+                     measure.vars=32:47)
+    names(practices)[names(practices) == 'variable'] <- 'Practice'      
+    
+    
+    practices %>%
+        ggplot( aes(x = value, y = Practice)) +
+        geom_density_ridges(aes(fill = Province), scale = 2, size = 0.75, rel_min_height = 0.02) +
+        theme_ridges() +
+        scale_x_continuous(limits=c(1, 90), expand = c(0.01, 0))
+    
+    practices %>%
+        # filter(Stakeholder %in% c("Student", "Industry")) %>%
+        ggplot( aes(x = value, y = Practice)) +
+        geom_density_ridges(aes(fill = Stakeholder), scale = 2, size = 0.75, alpha =0.2, rel_min_height = 0.02) +
+        theme_ridges() +
+        scale_x_continuous(limits=c(1, 90), expand = c(0.01, 0))    
     
 
 # ANOVA for adaptive practices --------------------------------------------
 
-survey_comparison(survey,colnames(survey)[32],"Province")
-survey_comparison(survey,colnames(survey)[33],"Province")
-survey_comparison(survey,colnames(survey)[34],"Province")
-survey_comparison(survey,colnames(survey)[35],"Province")
-survey_comparison(survey,colnames(survey)[36],"Province")
-survey_comparison(survey,colnames(survey)[37],"Province")
-survey_comparison(survey,colnames(survey)[38],"Province")
-survey_comparison(survey,colnames(survey)[39],"Province")
-survey_comparison(survey,colnames(survey)[40],"Province")
-survey_comparison(survey,colnames(survey)[41],"Province")
-survey_comparison(survey,colnames(survey)[42],"Province")
-survey_comparison(survey,colnames(survey)[43],"Province")
-survey_comparison(survey,colnames(survey)[44],"Province")
-survey_comparison(survey,colnames(survey)[45],"Province")
-survey_comparison(survey,colnames(survey)[46],"Province")
-survey_comparison(survey,colnames(survey)[47],"Province")
+survey_comparison(survey,colnames(survey)[32],"Province")   # "Natural_Regeneration" 
+survey_comparison(survey,colnames(survey)[33],"Province")   # "Old_growth_forests" 
+survey_comparison(survey,colnames(survey)[34],"Province")   # "Reduce_differences_natural"
+survey_comparison(survey,colnames(survey)[35],"Province")   # "Species_diversification"
+survey_comparison(survey,colnames(survey)[36],"Province")   # "Translocate_Populations"
+survey_comparison(survey,colnames(survey)[37],"Province")   # "Assisted_migration"
+survey_comparison(survey,colnames(survey)[38],"Province")   # "Seed_transfer" 
+survey_comparison(survey,colnames(survey)[39],"Province")   # "Continuous_cover"
+survey_comparison(survey,colnames(survey)[40],"Province")   # "Provenance_tests" 
+survey_comparison(survey,colnames(survey)[41],"Province")   # "Diverse_experiments"  
+survey_comparison(survey,colnames(survey)[42],"Province")   # "Shorten_rotation"  
+survey_comparison(survey,colnames(survey)[43],"Province")   # "Thinning"
+survey_comparison(survey,colnames(survey)[44],"Province")   # "Salvage_logging"
+survey_comparison(survey,colnames(survey)[45],"Province")   # "Promote_Retention"
+survey_comparison(survey,colnames(survey)[46],"Province")   # "Timber_supply"
+survey_comparison(survey,colnames(survey)[47],"Province")   # "Harvest_vulnerable_stands"
 
-survey_comparison(survey,colnames(survey)[32],"Stakeholder")
-survey_comparison(survey,colnames(survey)[33],"Stakeholder")
-survey_comparison(survey,colnames(survey)[34],"Stakeholder")
-survey_comparison(survey,colnames(survey)[35],"Stakeholder")
-survey_comparison(survey,colnames(survey)[36],"Stakeholder")
-survey_comparison(survey,colnames(survey)[37],"Stakeholder")
-survey_comparison(survey,colnames(survey)[38],"Stakeholder")
-survey_comparison(survey,colnames(survey)[39],"Stakeholder")
-survey_comparison(survey,colnames(survey)[40],"Stakeholder")
-survey_comparison(survey,colnames(survey)[41],"Stakeholder")
-survey_comparison(survey,colnames(survey)[42],"Stakeholder")
-survey_comparison(survey,colnames(survey)[43],"Stakeholder")
-survey_comparison(survey,colnames(survey)[44],"Stakeholder")
-survey_comparison(survey,colnames(survey)[45],"Stakeholder")
-survey_comparison(survey,colnames(survey)[46],"Stakeholder")
-survey_comparison(survey,colnames(survey)[47],"Stakeholder")
-
-
-
-
-
+survey_comparison(survey,colnames(survey)[32],"Stakeholder")   # "Natural_Regeneration" 
+survey_comparison(survey,colnames(survey)[33],"Stakeholder")   # "Old_growth_forests"
+survey_comparison(survey,colnames(survey)[34],"Stakeholder")   # "Reduce_differences_natural"
+survey_comparison(survey,colnames(survey)[35],"Stakeholder")   # "Species_diversification"
+survey_comparison(survey,colnames(survey)[36],"Stakeholder")   # "Translocate_Populations"
+survey_comparison(survey,colnames(survey)[37],"Stakeholder")   # "Assisted_migration"
+survey_comparison(survey,colnames(survey)[38],"Stakeholder")   # "Seed_transfer" 
+survey_comparison(survey,colnames(survey)[39],"Stakeholder")   # "Continuous_cover"
+survey_comparison(survey,colnames(survey)[40],"Stakeholder")   # "Provenance_tests" 
+survey_comparison(survey,colnames(survey)[41],"Stakeholder")   # "Diverse_experiments" 
+survey_comparison(survey,colnames(survey)[42],"Stakeholder")   # "Shorten_rotation"  
+survey_comparison(survey,colnames(survey)[43],"Stakeholder")   # "Thinning"
+survey_comparison(survey,colnames(survey)[44],"Stakeholder")   # "Salvage_logging"
+survey_comparison(survey,colnames(survey)[45],"Stakeholder")   # "Promote_Retention"
+survey_comparison(survey,colnames(survey)[46],"Stakeholder")   # "Timber_supply"
+survey_comparison(survey,colnames(survey)[47],"Stakeholder")   # "Harvest_vulnerable_stands"
 
 
 #     
